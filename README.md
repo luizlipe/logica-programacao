@@ -1,0 +1,1 @@
+# Lista de exercicios para aprendizado em lógica de programação com Javascript
