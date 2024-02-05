@@ -1,6 +1,13 @@
 <body>
     <script>
-        const idades = [5,6,8,3,6,9]
-        console.log(idades.includes(3))
-    </script>
+        const amigos = [{nome: "Ana", idade: 20},
+                        {nome: "Bruno", idade: 17},
+                        {nome: "Cátia", idade: 25}]
+                        
+        const soma = amigos.reduce((acumulador, amigo) => acumulador + amigo.idade, 0)
+        const todos = amigos.reduce((acumulador, amigo) => acumulador + amigo.nome + " ", "") 
+          
+        console.log(`Soma: ${soma}`)
+        console.log(`Todos: ${todos}`)
+        </script>
 </body>
