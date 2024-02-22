@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Aprovados na 2ª Fase</title>
+</head>
+<body>
+<h1>Aprovados na 2ª Fase do Concurso</h1>
+<form id="formulario">
+    <label for="nome">Nome:</label>
+    <input type="text" id="nome" required>
+    <label for="acertos">Número de Acertos:</label>
+    <input type="number" id="acertos" required>
+    <button type="button" onclick="adicionarCandidato()">Adicionar Candidato</button>
+</form>
+
+<div id="candidatos"></div>
+
+<form id="formAprovados">
+    <label for="notaAprovacao">Número mínimo de acertos para aprovação:</label>
+    <input type="number" id="notaAprovacao" required>
+    <button type="button" onclick="mostrarAprovados()">Aprovados 2ª Fase</button>
+</form>
+
+<div id="aprovados"></div>
+
+<script>
+    let candidatos = [];
+
+    function adicionarCandidato() {
+        const nome = document.getElementById('nome').value;
+        const acertos = parseInt(document.getElementById('acertos').value);
+        candidatos.push({ nome, acertos });
+        listarCandidatos();
+        document.getElementById('nome').value = '';
+        document.getElementById('acertos').value = '';
+    }
+
+    function listarCandidatos() {
+        const candidatosDiv = document.getElementById('candidatos');
+        candidatosDiv.innerHTML = '<h2>Candidatos Inscritos:</h2>';
+        candidatos.forEach(candidato => {
+            candidatosDiv.innerHTML += `<p>Nome: ${candidato.nome} - Acertos: ${candidato.acertos}</p>`;
+        });
+    }
+
+    function mostrarAprovados() {
+        const notaAprovacao = parseInt(document.getElementById('notaAprovacao').value);
+        const aprovados = candidatos.filter(candidato => candidato.acertos >= notaAprovacao);
+        aprovados.sort((a, b) => b.acertos - a.acertos); // Ordena em ordem decrescente de acertos
+
+        const aprovadosDiv = document.getElementById('aprovados');
+        aprovadosDiv.innerHTML = '<h2>Candidatos Aprovados na 2ª Fase:</h2>';
+        if (aprovados.length === 0) {
+            aprovadosDiv.innerHTML += '<p>Nenhum candidato foi aprovado.</p>';
+        } else {
+            aprovados.forEach(aprovado => {
+                aprovadosDiv.innerHTML += `<p>Nome: ${aprovado.nome} - Acertos: ${aprovado.acertos}</p>`;
+            });
+        }
+    }
+</script>
+</body>
+</html>
+
+

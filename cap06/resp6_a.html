@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tabela de Jogos</title>
+</head>
+<body>
+<h1>Tabela de Jogos do Campeonato</h1>
+<form id="formulario">
+    <label for="clube">Nome do Clube:</label>
+    <input type="text" id="clube" required>
+    <button type="button" onclick="validarPreenchimento()">Adicionar Clube</button>
+</form>
+
+<div id="clubes"></div>
+<div id="tabela"></div>
+
+<script>
+    let clubes = [];
+
+    function validarPreenchimento() {
+        const nomeClube = document.getElementById('clube').value.trim();
+        if (nomeClube !== '') {
+            adicionarClube(nomeClube);
+            listarClubes();
+            document.getElementById('clube').value = '';
+        } else {
+            alert('Por favor, preencha o nome do clube.');
+        }
+    }
+
+    function adicionarClube(clube) {
+        clubes.push(clube);
+    }
+
+    function listarClubes() {
+        const clubesDiv = document.getElementById('clubes');
+        clubesDiv.innerHTML = '<h2>Lista de Clubes:</h2>';
+        clubes.forEach((clube, index) => {
+            clubesDiv.innerHTML += `<p>${index + 1}. ${clube}</p>`;
+        });
+    }
+
+    function montarTabela() {
+        const tabelaDiv = document.getElementById('tabela');
+        if (clubes.length % 2 !== 0) {
+            tabelaDiv.innerHTML = '<p>O número de clubes é ímpar, não é possível criar uma tabela de jogos.</p>';
+            return;
+        }
+
+        tabelaDiv.innerHTML = '<h2>Tabela de Jogos:</h2>';
+        for (let i = 0; i < clubes.length / 2; i++) {
+            tabelaDiv.innerHTML += `<p>${clubes[i]} x ${clubes[clubes.length - i - 1]}</p>`;
+        }
+    }
+
+    document.getElementById('formulario').addEventListener('submit', function(event) {
+        event.preventDefault();
+    });
+
+    document.getElementById('formulario').addEventListener('submit', function(event) {
+        event.preventDefault();
+    });
+</script>
+</body>
+</html>

@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Verificar Ordem</title>
+</head>
+<body>
+<h1>Verificar Ordem Crescente</h1>
+<form id="formulario">
+    <label for="numero">Número:</label>
+    <input type="number" id="numero" required>
+    <button type="button" onclick="adicionarNumero()">Adicionar Número</button>
+</form>
+
+<div id="numeros"></div>
+<button type="button" onclick="verificarOrdem()">Verificar Ordem</button>
+
+<script>
+    let numeros = [];
+
+    function adicionarNumero() {
+        const novoNumero = parseInt(document.getElementById('numero').value);
+        if (!numeros.includes(novoNumero)) {
+            numeros.push(novoNumero);
+            listarNumeros();
+        } else {
+            alert('Este número já foi adicionado.');
+        }
+        document.getElementById('numero').value = '';
+    }
+
+    function listarNumeros() {
+        const numerosDiv = document.getElementById('numeros');
+        numerosDiv.innerHTML = '<h2>Números:</h2>';
+        numeros.forEach(numero => {
+            numerosDiv.innerHTML += `<p>${numero}</p>`;
+        });
+    }
+
+    function verificarOrdem() {
+        if (numeros.length < 2) {
+            alert('Adicione pelo menos dois números para verificar a ordem.');
+            return;
+        }
+
+        let ordenado = true;
+        for (let i = 1; i < numeros.length; i++) {
+            if (numeros[i] < numeros[i - 1]) {
+                ordenado = false;
+                break;
+            }
+        }
+
+        if (ordenado) {
+            alert('Os números estão em ordem crescente.');
+        } else {
+            alert('Os números não estão em ordem crescente.');
+        }
+    }
+</script>
+</body>
+</html>
