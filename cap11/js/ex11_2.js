@@ -1,89 +1,106 @@
-const frm = document.querySelector("form")
-const dvPalco = document.querySelector("#divPalco")
+const frm = document.querySelector("form"); // captura elementos da página
+const dvPalco = document.querySelector("#divPalco");
 
-const POLTRONAS = 240
+const POLTRONAS = 240; // constante com o número de poltronas do teatro
 
-const reservadas = []
+const reservadas = []; // vetor com as poltronas reservadas pelo cliente
 
 window.addEventListener("load", () => {
-    const ocupadas = localStorage.getItem("TeatroOcupadas")
+  // operador ternário: se houver dados salvos em localStorage, faz um split(";") e
+  // atribui esses dados ao array, caso contrário, o array é inicializado vazio
+  const ocupadas = localStorage.getItem("teatroOcupadas")
     ? localStorage.getItem("teatroOcupadas").split(";")
-    : []
+    : [];
 
-    for(let i = 1; i<= POLTRONAS; i++){
-        const figure = document.createElement("figure")
-        const imgStatus = document.createElement("img")
+  // repetição para montar o nº total de poltronas (definida na constante)
+  for (let i = 1; i <= POLTRONAS; i++) {
+    const figure = document.createElement("figure"); // cria tag figure
+    const imgStatus = document.createElement("img"); // cria tag img
 
-        imgStatus.src = ocupadas.includes(i.toString())
-        ? "img/ocupada.jpg"
-        : "img/disponivel.jpg"
-        imgStatus.className = "poltrona"
-        const figureCap = document.createElement("figcaption")
+    // se a posição consta em ocupadas, exibe a imagem ocupada, senão, disponível
+    imgStatus.src = ocupadas.includes(i.toString())
+      ? "img/ocupada.jpg"
+      : "img/disponivel.jpg";
+    imgStatus.className = "poltrona"; // classe com dimensão da img
 
-        const zeros = i < 10 ? "00" : i < 100 ? "0" : ""
+    const figureCap = document.createElement("figcaption"); // cria figcaption
 
-        const num = document.createTextNode(`[${zeros}]${i}`)
+    // quantidade de zeros antes do número da poltrona
+    const zeros = i < 10 ? "00" : i < 100 ? "0" : "";
 
-        figureCap.appendChild(num)
-        figure.appendChild(imgStatus)
-        figure.appendChild(figureCap)
+    const num = document.createTextNode(`[${zeros}${i}]`); // cria texto
 
-        if(i % 24 == 12) figure.style.marginRight = "60px"
-        dvPalco.appendChild(figure)
-        (i%24 == 0) && dvPalco.appendChild(document.createElement("br"))
-    }
-})
+    figureCap.appendChild(num); // define os pais de cada tag criada
+    figure.appendChild(imgStatus);
+    figure.appendChild(figureCap);
+
+    // se i módulo 24 == 12 (é o corredor: define margem direita 60px)
+    if (i % 24 == 12) figure.style.marginRight = "60px";
+
+    dvPalco.appendChild(figure); // indica que figure é filha de divPalco
+
+    // se i módulo 24 == 0: o comando após && será executado (insere quebra de linha)
+    (i % 24 == 0) && dvPalco.appendChild(document.createElement("br"));
+  }
+});
 
 frm.addEventListener("submit", (e) => {
-    e.preventDefault()
+  e.preventDefault(); // evita envio do form
 
-    const poltrona = Number(frm.inPoltrona.value)
+  const poltrona = Number(frm.inPoltrona.value); // obtém conteúdo de inPoltrona
 
-    if(poltrona > POLTRONAS){
-        alert("Informe um número de poltrona válido")
-        frm.inPoltrona.focus()
-        return
-    }
+  // valida o preenchimento do campo de entrada... não pode ser maior que a const
+  if (poltrona > POLTRONAS) {
+    alert("Informe um número de poltrona válido");
+    frm.inPoltrona.focus();
+    return;
+  }
 
-    const ocupadas = localStorage.getItem("teatroOcupadas")
+  const ocupadas = localStorage.getItem("teatroOcupadas")
     ? localStorage.getItem("teatroOcupadas").split(";")
-    : []
+    : [];
 
-    if(ocupadas.includes(poltrona.toString())){
-        alert(`poltrona ${poltrona} já está ocupada...`)
-        frm.inPoltrona.focus()
-        return
-    }
+  // se poltrona escolhida já está ocupada (existe em localStorage)
+  if (ocupadas.includes(poltrona.toString())) {
+    alert(`Poltrona ${poltrona} já está ocupada...`);
+    frm.inPoltrona.value = "";
+    frm.inPoltrona.focus();
+    return;
+  }
 
-    const imgPoltrona = dvPalco.querySelectorAll("img")[poltrona - 1]
+  // captura imagem da poltrona, filha de divPalco. É -1 pois começa em 0
+  const imgPoltrona = dvPalco.querySelectorAll("img")[poltrona - 1];
 
-    reservadas.push(poltrona)
+  imgPoltrona.src = "img/reservada.jpg"; // modifica atributo da imagem
 
-    frm.inPoltrona.value = ""
-    frm.inPoltrona.focus()
+  reservadas.push(poltrona); // adiciona poltrona ao vetor reservadas
 
-})
+  frm.inPoltrona.value = ""; // limpa campo
+  frm.inPoltrona.focus(); // jogo o foco em inPoltrona
+});
 
 frm.btConfirmar.addEventListener("click", () => {
-    if(reservadas.length == 0){
-        alert("Não há poltronas reservadas")
-        frm.inPoltrona.focus
-        return
-    }
+  if (reservadas.length == 0) {
+    alert("Não há poltronas reservadas");
+    frm.inPoltrona.focus();
+    return;
+  }
 
-    const ocupadas = localStorage.getItem("teatroOcupadas")
+  const ocupadas = localStorage.getItem("teatroOcupadas")
     ? localStorage.getItem("teatroOcupadas").split(";")
-    : []
+    : [];
 
-    for (let i = reservadas.length -1; i >= 0; i++){
-        ocupadas.push(reservadas[i])
+  // for decrescente, pois as reservas vão sendo removidas a cada alteração da imagem
+  for (let i = reservadas.length - 1; i >= 0; i--) {
+    ocupadas.push(reservadas[i]);
 
-        const imgPoltrona = dvPalco.querySelectorAll("img")[reservadas[i] - 1]
+    // captura imagem da poltrona, filha de divPalco. É -1 pois começa em 0
+    const imgPoltrona = dvPalco.querySelectorAll("img")[reservadas[i] - 1];
 
-        imgPoltrona.src = "img/ocupada.jpg"
+    imgPoltrona.src = "img/ocupada.jpg"; // modifica atributo da imagem
 
-        reservadas.pop()
+    reservadas.pop(); // remove do vetor a reserva já alterada
+  }
 
-    }
-    localStorage.setItem("teatroOcupadas", ocupadas.join(";"))
-})
+  localStorage.setItem("teatroOcupadas", ocupadas.join(";"));
+});
